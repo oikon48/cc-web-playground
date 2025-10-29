@@ -13,19 +13,28 @@ Claude Code、Gemini CLI、Codex CLIの3つのCLIツールのGitHubから機能�
 ## 対象CLIツール
 
 ### 1. Claude Code
-- **リポジトリ**: anthropics/claude-code (推定)
+- **リポジトリ**: [anthropics/claude-code](https://github.com/anthropics/claude-code)
+- **Stars**: 多数（人気プロジェクト）
+- **ライセンス**: Apache-2.0
 - **情報源**: GitHub Releases, CHANGELOG.md
-- **特徴**: Anthropic公式のClaude CLI
+- **特徴**: Anthropic公式のClaude CLI、ターミナル上で動作するエージェント型コーディングツール
+- **インストール**: `npm install -g @anthropic-ai/claude-code`
 
 ### 2. Gemini CLI
-- **リポジトリ**: 要調査（Google関連）
-- **情報源**: GitHub Releases, CHANGELOG.md
-- **特徴**: Google Gemini用CLI
+- **リポジトリ**: [google-gemini/gemini-cli](https://github.com/google-gemini/gemini-cli)
+- **Stars**: 80,716+ (2025年10月時点)
+- **ライセンス**: Apache-2.0
+- **情報源**: GitHub Releases
+- **特徴**: Google公式のGemini CLI、オープンソースのAIエージェント、100万トークンのコンテキストウィンドウ
+- **公式ドキュメント**: https://google-gemini.github.io/gemini-cli/
 
 ### 3. Codex CLI
-- **リポジトリ**: 要調査（OpenAI関連）
-- **情報源**: GitHub Releases, CHANGELOG.md
-- **特徴**: OpenAI Codex用CLI
+- **リポジトリ**: [openai/codex](https://github.com/openai/codex)
+- **ライセンス**: Apache-2.0
+- **情報源**: GitHub Releases
+- **特徴**: OpenAI公式のCodex CLI、Rustで構築された軽量コーディングエージェント
+- **インストール**: `npm i -g @openai/codex` または `brew install --cask codex`
+- **公式ドキュメント**: https://developers.openai.com/codex/cli/
 
 ## 機能要件
 
@@ -111,8 +120,8 @@ Option 2: Dynamic API
 ┌─────────────────────────────────────────┐
 │         GitHub Repositories              │
 │  - anthropics/claude-code               │
-│  - [gemini-cli-repo]                    │
-│  - [codex-cli-repo]                     │
+│  - google-gemini/gemini-cli             │
+│  - openai/codex                         │
 └────────────┬────────────────────────────┘
              │ GitHub API
              │ (Build Time)
@@ -313,13 +322,12 @@ interface ChangelogData {
 
 ### 1. GitHubリポジトリの特定
 
-**課題**: Gemini CLI、Codex CLIの正確なGitHubリポジトリが不明
+**ステータス**: ✅ 解決済み
 
-**解決策**:
-- GitHub検索でリポジトリを特定
-- 公式ドキュメントから情報収集
-- コミュニティ情報を参照
-- 代替: 公式ドキュメントページをスクレイピング
+すべてのCLIツールの公式GitHubリポジトリが特定されました：
+- Claude Code: `anthropics/claude-code`
+- Gemini CLI: `google-gemini/gemini-cli` (80,716+ stars)
+- Codex CLI: `openai/codex`
 
 ### 2. GitHub APIレート制限
 
@@ -415,7 +423,51 @@ interface ChangelogData {
 ## Next Steps
 
 1. ✅ 計画ドキュメント作成
-2. ⬜ 各CLIツールの正確なGitHubリポジトリを特定
+2. ✅ 各CLIツールの正確なGitHubリポジトリを特定
 3. ⬜ プロジェクト初期化（Next.js）
 4. ⬜ GitHub API連携の実装開始
 5. ⬜ モックデータでのUI開発開始
+
+---
+
+## 調査結果メモ（2025-10-29）
+
+### リポジトリ詳細調査
+
+すべてのCLIツールの公式リポジトリが確認されました：
+
+1. **Claude Code** (`anthropics/claude-code`)
+   - Anthropic公式の最新CLIツール
+   - ターミナルベースのエージェント型コーディング支援
+   - 自然言語コマンドでコード操作、Git操作が可能
+   - npm経由でインストール可能
+
+2. **Gemini CLI** (`google-gemini/gemini-cli`)
+   - Google公式、80,000+ stars（非常に人気）
+   - オープンソース、Apache-2.0ライセンス
+   - Gemini 2.5 Proを使用、100万トークンのコンテキスト
+   - 無料ティア: 60 req/min、1,000 req/day
+   - MCP (Model Context Protocol) サポート
+   - GitHub Actions連携あり
+
+3. **Codex CLI** (`openai/codex`)
+   - OpenAI公式の軽量コーディングエージェント
+   - Rustで実装（高速・効率的）
+   - macOS/Linux対応（Windows実験的）
+   - npm/Homebrew経由でインストール可能
+   - GitHub Actions連携あり (`openai/codex-action`)
+
+### 技術的発見
+
+- すべてのツールが**GitHub Actions連携**を提供しており、CI/CD統合が可能
+- すべてが**Apache-2.0ライセンス**（オープンソース）
+- すべてが**npm経由でインストール可能**
+- Gemini CLIはリリース情報が豊富（80,716 stars）で、活発に開発中
+- 各ツールともリリースページが整備されているため、GitHub Releases APIでの取得が最適
+
+### 次回実装時の注意点
+
+1. Gemini CLIは非常にアクティブなため、更新頻度が高い可能性
+2. 各ツールのリリースノート形式を確認し、パーサー設計に反映
+3. GitHub Actions連携があるため、自動化の参考にできる
+4. すべてのツールが公式ドキュメントサイトを持つため、補完情報源として活用可能
