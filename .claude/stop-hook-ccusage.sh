@@ -24,6 +24,3 @@ fi
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# TEST: Exit with code 2 to see behavior
-exit 2
