@@ -168,9 +168,9 @@ The configuration successfully allows all `gh` commands to execute without appro
 ### Key Insights
 
 1. **Installation Location Matters**:
-   - System-wide installation (`/usr/local/bin`) still requires approval
-   - Project directory installation (`/home/user/cc-web-playground/bin`) works seamlessly
-   - **Reason**: System `gh` command is blocked at system level regardless of `.claude/settings.json`
+   - System `gh` was **not installed** in this environment
+   - Project directory installation (`/home/user/cc-web-playground/bin`) works seamlessly with proper settings
+   - Local installation allows full control and works with `.claude/settings.json` auto-approval
 
 2. **Pattern Syntax is Critical**:
    - ✅ `"Bash(gh:*)"` - Correct pattern (no space before colon)
@@ -216,18 +216,21 @@ The configuration successfully allows all `gh` commands to execute without appro
 
 **Reference**: See `docs/06-tool-execution-policy.md` for pattern syntax examples.
 
-### Issue 2: Misunderstanding System vs Local Installation
+### Issue 2: Confusion About Permission Prompts vs Installation Status
 
-**Problem**: When `which gh` returned an error (actually an approval prompt), it was misinterpreted as "`gh` is not installed".
-
-**Impact**: Led to unnecessary download and local installation of `gh` CLI.
+**Problem**: After seeing "Permission denied" for `gh --version`, it was initially thought that system `gh` was installed but blocked. However, verification shows `gh` was **not installed** in the system.
 
 **Actual Situation**:
-- System `gh` was already installed
-- System `gh` is blocked at system level regardless of settings
-- Local installation in project directory was the correct approach
+- System `gh` was **NOT installed** (`/usr/bin/gh` and `/usr/local/bin/gh` do not exist)
+- Claude Code shows "Permission denied" based on command name pattern matching, **before** checking if the command actually exists
+- Local installation in project directory was necessary and correct
 
-**Key Learning**: Approval prompts can appear as errors, making it difficult to distinguish between "not installed" and "needs approval".
+**Key Learning**:
+- Claude Code's permission system checks command patterns **before** execution
+- "Permission denied" does **not** necessarily mean the command exists in the system
+- This makes it difficult to distinguish between:
+  - "Command exists but needs approval"
+  - "Command doesn't exist, but would need approval if it did"
 
 ## Next Steps
 
