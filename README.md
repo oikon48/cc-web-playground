@@ -18,6 +18,8 @@ This repository contains comprehensive research on the Claude Code on the Web en
 - **[docs/05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md)** - Data persistence investigation
 - **[docs/06-tool-execution-policy.md](./docs/06-tool-execution-policy.md)** - Tool execution policy and command capabilities
 - **[docs/07-investigation-summary.md](./docs/07-investigation-summary.md)** - Investigation summary and next steps
+- **[docs/08-gh-settings-verification.md](./docs/08-gh-settings-verification.md)** - GitHub CLI settings verification results
+- **[docs/09-gh-cli-complete-investigation.md](./docs/09-gh-cli-complete-investigation.md)** - Complete gh CLI investigation and setup guide
 
 ### Quick Links
 
@@ -29,6 +31,7 @@ This repository contains comprehensive research on the Claude Code on the Web en
 | Data Persistence | [05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md) |
 | Tool Execution Policy | [06-tool-execution-policy.md](./docs/06-tool-execution-policy.md) |
 | Investigation Summary | [07-investigation-summary.md](./docs/07-investigation-summary.md) |
+| GitHub CLI Setup | [09-gh-cli-complete-investigation.md](./docs/09-gh-cli-complete-investigation.md) |
 | Future Research | [04-future-investigation-plan.md](./docs/04-future-investigation-plan.md) |
 
 ## 🎯 What's Inside
@@ -41,6 +44,8 @@ This repository contains comprehensive research on the Claude Code on the Web en
 - ✅ Tool execution policy and permission system (2025-10-30)
 - ✅ Permission denied mechanism investigation (2025-10-30)
 - ✅ .claude/settings.json auto-approval configuration (2025-10-30)
+- ✅ GitHub CLI installation and PATH configuration (2025-10-30)
+- ✅ Settings file loading timing investigation (2025-10-30)
 - 📋 Future investigation roadmap
 
 ## 🚀 Getting Started

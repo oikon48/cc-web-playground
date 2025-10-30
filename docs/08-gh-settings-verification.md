@@ -248,3 +248,15 @@ The configuration successfully allows all `gh` commands to execute without appro
 ---
 
 **Verification Status**: ✅ **COMPLETE AND SUCCESSFUL** (with syntax correction applied)
+
+---
+
+## Follow-up Investigation
+
+For a complete analysis of the gh CLI setup, including:
+- Why pure `gh` commands still require approval
+- PATH configuration details
+- Settings file loading timing
+- Recommended workarounds
+
+See: **[docs/09-gh-cli-complete-investigation.md](./09-gh-cli-complete-investigation.md)**
