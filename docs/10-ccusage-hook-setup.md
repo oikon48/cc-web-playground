@@ -26,7 +26,7 @@
 
 ### 1. Stop Hook スクリプトの作成
 
-**ファイル**: `/root/.claude/stop-hook-ccusage.sh`
+**ファイル**: `/home/user/cc-web-playground/.claude/stop-hook-ccusage.sh`
 
 ```bash
 #!/usr/bin/env bash
@@ -60,12 +60,12 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 ### 2. 実行権限の付与
 
 ```bash
-chmod +x /root/.claude/stop-hook-ccusage.sh
+chmod +x /home/user/cc-web-playground/.claude/stop-hook-ccusage.sh
 ```
 
 ### 3. settings.json への追加
 
-**ファイル**: `/root/.claude/settings.json`
+**ファイル**: `/home/user/cc-web-playground/.claude/settings.json`
 
 ```json
 {
@@ -82,11 +82,11 @@ chmod +x /root/.claude/stop-hook-ccusage.sh
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/stop-hook-git-check.sh"
+            "command": ".claude/stop-hook-git-check.sh"
           },
           {
             "type": "command",
-            "command": "~/.claude/stop-hook-ccusage.sh"
+            "command": ".claude/stop-hook-ccusage.sh"
           }
         ]
       }
@@ -105,7 +105,7 @@ chmod +x /root/.claude/stop-hook-ccusage.sh
 ### 手動テスト
 
 ```bash
-~/.claude/stop-hook-ccusage.sh
+.claude/stop-hook-ccusage.sh
 ```
 
 ### 期待される出力
@@ -192,13 +192,13 @@ which npx
 **対処**:
 ```bash
 # 構文チェック
-cat /root/.claude/settings.json | jq .
+cat /home/user/cc-web-playground/.claude/settings.json | jq .
 
 # 実行権限確認
-ls -la /root/.claude/stop-hook-ccusage.sh
+ls -la /home/user/cc-web-playground/.claude/stop-hook-ccusage.sh
 
 # 手動実行テスト
-~/.claude/stop-hook-ccusage.sh
+.claude/stop-hook-ccusage.sh
 ```
 
 ## 他の ccusage コマンド
@@ -256,7 +256,7 @@ npx --yes ccusage@latest daily 2>/dev/null
 
 ## 設定ファイルの永続化
 
-**注意**: `/root/.claude/settings.json` はプロジェクトディレクトリ外にあるため、セッションをまたいで永続化されるか不明です。
+**注意**: `/home/user/cc-web-playground/.claude/settings.json` はプロジェクトディレクトリ外にあるため、セッションをまたいで永続化されるか不明です。
 
 ### 次のセッションでの確認事項
 
@@ -268,10 +268,10 @@ npx --yes ccusage@latest daily 2>/dev/null
 
 ```bash
 # 設定のバックアップ
-cp /root/.claude/settings.json ~/settings.json.backup
+cp /home/user/cc-web-playground/.claude/settings.json ~/settings.json.backup
 
 # スクリプトのバックアップ
-cp /root/.claude/stop-hook-ccusage.sh ~/stop-hook-ccusage.sh.backup
+cp /home/user/cc-web-playground/.claude/stop-hook-ccusage.sh ~/stop-hook-ccusage.sh.backup
 ```
 
 ## まとめ
