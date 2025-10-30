@@ -16,6 +16,8 @@ This repository contains comprehensive research on the Claude Code on the Web en
 - **[docs/03-gh-command-workaround.md](./docs/03-gh-command-workaround.md)** - GitHub CLI workaround
 - **[docs/04-future-investigation-plan.md](./docs/04-future-investigation-plan.md)** - Future investigation plan
 - **[docs/05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md)** - Data persistence investigation
+- **[docs/06-tool-execution-policy.md](./docs/06-tool-execution-policy.md)** - Tool execution policy and command capabilities
+- **[docs/07-investigation-summary.md](./docs/07-investigation-summary.md)** - Investigation summary and next steps
 
 ### Quick Links
 
@@ -25,6 +27,8 @@ This repository contains comprehensive research on the Claude Code on the Web en
 | System Architecture | [02-container-lifecycle.md](./docs/02-container-lifecycle.md) |
 | GitHub Integration | [03-gh-command-workaround.md](./docs/03-gh-command-workaround.md) |
 | Data Persistence | [05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md) |
+| Tool Execution Policy | [06-tool-execution-policy.md](./docs/06-tool-execution-policy.md) |
+| Investigation Summary | [07-investigation-summary.md](./docs/07-investigation-summary.md) |
 | Future Research | [04-future-investigation-plan.md](./docs/04-future-investigation-plan.md) |
 
 ## 🎯 What's Inside
@@ -34,7 +38,10 @@ This repository contains comprehensive research on the Claude Code on the Web en
 - ✅ Network capabilities and proxy configuration
 - ✅ Git setup and authentication details
 - ✅ Command execution policies and workarounds
-- 📋 Future investigation roadmap (15 categories)
+- ✅ Tool execution policy and permission system (2025-10-30)
+- ✅ Permission denied mechanism investigation (2025-10-30)
+- ✅ .claude/settings.json auto-approval configuration (2025-10-30)
+- 📋 Future investigation roadmap
 
 ## 🚀 Getting Started
 
