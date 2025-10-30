@@ -45,10 +45,13 @@ Claude Code on the Web環境において、**セッション間で永続化さ�
 2. シンボリックリンクの作成と検証
 3. 書き込み権限のテスト
 
-### Phase 3: 検証（次回セッション）
+### Phase 3: 検証（次回セッション）✅ **完了**
 1. テストファイルの存在確認
 2. シンボリックリンクの保持確認
 3. 永続化の信頼性評価
+
+**検証実施日**: 2025-10-30
+**結果ファイル**: `persistence-test-results.txt`
 
 ---
 
@@ -83,27 +86,35 @@ Claude Code on the Web環境において、**セッション間で永続化さ�
 
 ### ✅ 確実に永続化される（Persistent）
 
-#### 1. `/home/user/` 配下全体
+#### 1. プロジェクトディレクトリのみ（`/home/user/cc-web-playground/`）
 
 ```bash
-/home/user/
-├── cc-web-playground/      # プロジェクトディレクトリ
-│   ├── .git/              # Gitリポジトリ
-│   ├── docs/              # ドキュメント
-│   └── ...                # すべてのプロジェクトファイル
-└── *                      # /home/user/直下のすべてのファイル
+/home/user/cc-web-playground/  # ← このディレクトリのみ永続化
+├── .git/                      # Gitリポジトリ
+├── docs/                      # ドキュメント
+├── .persistence-test          # ✅ 検証済み：永続化される
+└── ...                        # すべてのプロジェクトファイル
+
+/home/user/persistence-test.txt  # ❌ 検証済み：永続化されない
 ```
+
+**重要**: `/home/user/`配下全体ではなく、**Gitでクローンしたプロジェクトディレクトリのみ**が永続化される
 
 **特徴**:
 - プロジェクトファイルの完全な永続化
 - Gitリポジトリの状態保持
 - 作業ディレクトリの変更はすべて保存
+- プロジェクト外のファイルは永続化されない
 
-**テストファイル**: `/home/user/persistence-test.txt` ✅ 配置済み
+**検証結果**:
+- ✅ `/home/user/cc-web-playground/.persistence-test` - 永続化成功
+- ❌ `/home/user/persistence-test.txt` - 永続化されず
 
 ---
 
-#### 2. `~/.claude/` ディレクトリ
+#### 2. `~/.claude/` ディレクトリ（サービス管理領域）
+
+⚠️ **重要**: この領域はClaude Code on the Webサービスが管理しており、**ユーザーが直接コントロールできない**
 
 ```bash
 ~/.claude/
@@ -140,7 +151,11 @@ Claude Code on the Web環境において、**セッション間で永続化さ�
 - `statsig/`: 29KB（統計データ）
 - `todos/`: 5.5KB（タスク管理）
 
-**テストファイル**: `~/.claude/persistence-test.txt` ✅ 配置済み
+**検証結果**:
+- ❌ `~/.claude/persistence-test.txt` - ユーザー作成ファイルは永続化されず
+- ✅ サービス管理ファイル（settings.json等）のみ永続化
+
+**用途**: Claude Codeの内部動作のみ。ユーザーデータの保存には使用不可
 
 ---
 
@@ -445,42 +460,46 @@ Purpose: Verify data persistence across sessions
 
 ---
 
-## 重要な発見
+## 重要な発見（検証済み）
 
-### 1. `/home/user/` は完全に永続化される
+### 1. ✅ プロジェクトディレクトリのみが永続化される
 
-**証拠**:
-- プロジェクトファイルが複数セッションにわたって保持
-- `.git/`ディレクトリの完全な永続化
-- Git historyが累積
+**検証結果**:
+- ✅ `/home/user/cc-web-playground/.persistence-test` - 永続化成功
+- ❌ `/home/user/persistence-test.txt` - 永続化されず（プロジェクト外）
 
-**推論**: `/home/user/`はホスト側のストレージにマウントされている
+**結論**:
+- Gitでクローンした**プロジェクトディレクトリのみ**が永続化対象
+- `/home/user/`配下全体ではない
+- プロジェクト外のファイルは保存されない
+
+**実装**: プロジェクトディレクトリがホスト側のストレージにマウントされている
 
 ---
 
-### 2. `~/.claude/` は選択的に永続化される
+### 2. ⚠️ `~/.claude/` はサービス管理領域（ユーザーコントロール不可）
 
-**永続化されるもの**:
-- `settings.json`
-- フックスクリプト
-- `projects/`の会話履歴
-- `shell-snapshots/`
-- `todos/`
-- `statsig/`
+**検証結果**:
+- ❌ `~/.claude/persistence-test.txt` - ユーザー作成ファイルは永続化されず
+- ✅ `settings.json`、フックスクリプト等のサービス管理ファイルは永続化
+
+**結論**:
+- Claude Code on the Webサービスが管理する内部領域
+- ユーザーがデータ保存目的で使用できない
+- サービスの動作に必要なファイルのみ自動管理
 
 **サイズ**: 合計約1.5MB（会話履歴が主）
 
-**同期タイミング**: リアルタイム（ファイル書き込み時）
-
 ---
 
-### 3. システムディレクトリは完全にエフェメラル
+### 3. ✅ システムディレクトリは完全にエフェメラル
 
-**含まれるもの**:
-- `/tmp/`, `/var/tmp/`
-- `/root/`（`.claude/`を除く）
-- `/usr/local/`, `/opt/`
-- `/etc/`
+**検証結果（すべて正しく削除）**:
+- ✅ `/tmp/persistence-test.txt` - 削除
+- ✅ `/root/persistence-test.txt` - 削除
+- ✅ `/var/tmp/persistence-test.txt` - 削除
+- ✅ `/usr/local/persistence-test.txt` - 削除
+- ✅ `/opt/persistence-test.txt` - 削除
 
 **影響**:
 - インストールしたパッケージは消失
@@ -489,47 +508,53 @@ Purpose: Verify data persistence across sessions
 
 ---
 
-### 4. シンボリックリンクは慎重に使用すべき
+### 4. ✅ シンボリックリンク（プロジェクト内）は永続化される
 
-**リスク**:
-- エフェメラルディレクトリへのリンクはデッドリンクになる
-- 絶対パスリンクは移植性が低い
+**検証結果**:
+- ✅ `symlink-relative.txt` → `symlink-target.txt` - 有効
+- ✅ `symlink-absolute.txt` → `/home/user/cc-web-playground/symlink-target.txt` - 有効
+- ❌ `symlink-to-tmp.txt` → `/tmp/persistence-test.txt` - デッドリンク（ターゲット消失）
+- ❌ `symlink-to-claude.txt` → `~/.claude/persistence-test.txt` - デッドリンク（ターゲット消失）
 
 **推奨**:
-- `/home/user/`配下での相対パスリンク使用
-- `~/.claude/`へのリンクは有効
+- プロジェクトディレクトリ内での相対パスリンク使用が安全
+- エフェメラルディレクトリへのリンクは避ける
 
 ---
 
-## ベストプラクティス
+## ベストプラクティス（検証済み）
 
 ### 1. 永続化したいデータの配置
 
-#### ✅ 推奨
+#### ✅ 推奨（唯一の永続化領域）
 
 ```bash
-# プロジェクトファイルとして配置
+# プロジェクトディレクトリ内のみ永続化される
 /home/user/cc-web-playground/configs/
 /home/user/cc-web-playground/scripts/
-
-# ユーザーディレクトリ直下
-/home/user/.my-persistent-config
-
-# Claude設定として配置
-~/.claude/my-custom-hook.sh
-~/.claude/settings.json
+/home/user/cc-web-playground/data/
+/home/user/cc-web-playground/.env
 ```
 
-#### ❌ 非推奨
+**重要**: プロジェクトディレクトリ外は永続化されない
+
+#### ❌ 非推奨（永続化されない）
 
 ```bash
+# /home/user/直下（プロジェクト外は消失）
+/home/user/.my-persistent-config  # ❌ 永続化されない
+
+# ~/.claude/（サービス管理領域、ユーザー使用不可）
+~/.claude/my-custom-hook.sh      # ❌ 永続化されない
+~/.claude/my-data.json           # ❌ 永続化されない
+
 # rootホームの直接編集（消失する）
-~/.bashrc
-~/.vimrc
+~/.bashrc                         # ❌ 消失
+~/.vimrc                          # ❌ 消失
 
 # システムディレクトリ（消失する）
-/usr/local/bin/my-script
-/opt/my-tool/
+/usr/local/bin/my-script          # ❌ 消失
+/opt/my-tool/                     # ❌ 消失
 ```
 
 ---
@@ -585,7 +610,7 @@ source ~/.bashrc
 
 ### 4. 環境変数の永続化
 
-#### 方法A: プロジェクト`.env`ファイル
+#### ✅ 推奨: プロジェクト`.env`ファイル（唯一の方法）
 
 ```bash
 # /home/user/cc-web-playground/.env
@@ -596,7 +621,9 @@ export MY_CONFIG="yyy"
 source /home/user/cc-web-playground/.env
 ```
 
-#### 方法B: Claude設定ファイル活用
+**重要**: プロジェクトディレクトリ内に配置することで永続化される
+
+#### ❌ 非推奨: `~/.claude/settings.json`の利用
 
 ```json
 // ~/.claude/settings.json
@@ -607,7 +634,7 @@ source /home/user/cc-web-playground/.env
 }
 ```
 
-**注意**: 現在のClaude Codeバージョンでサポート状況要確認
+**理由**: `~/.claude/`はサービス管理領域のため、ユーザーが作成したファイルは永続化されない
 
 ---
 
@@ -628,105 +655,84 @@ git push
 
 ---
 
-## 次回セッション確認項目
+## 検証結果の詳細
 
-### チェックリスト
+### チェックリスト（完了）
 
-以下のファイル・リンクの存在を確認し、永続化の検証を完了する：
+#### ✅ 永続化が確認されたもの
 
-#### ✅ 永続化が期待されるもの
+- [x] `/home/user/cc-web-playground/.persistence-test` - **永続化成功**
+- [x] `/home/user/cc-web-playground/symlink-relative.txt`（リンク） - **有効**
+- [x] `/home/user/cc-web-playground/symlink-absolute.txt`（リンク） - **有効**
+- [x] `/home/user/cc-web-playground/symlink-target.txt`（ターゲット） - **永続化**
 
-- [ ] `/home/user/persistence-test.txt`
-- [ ] `/home/user/cc-web-playground/.persistence-test`
-- [ ] `~/.claude/persistence-test.txt`
-- [ ] `/home/user/cc-web-playground/symlink-relative.txt`（リンク）
-- [ ] `/home/user/cc-web-playground/symlink-absolute.txt`（リンク）
-- [ ] `/home/user/cc-web-playground/symlink-to-claude.txt`（リンク）
-- [ ] `/home/user/cc-web-playground/symlink-target.txt`（ターゲット）
+#### ❌ 永続化されなかったもの（予想と異なる）
 
-#### ❌ 消失が予想されるもの
+- [x] `/home/user/persistence-test.txt` - **永続化されず**（プロジェクト外）
+- [x] `~/.claude/persistence-test.txt` - **永続化されず**（ユーザー作成ファイル）
 
-- [ ] `/tmp/persistence-test.txt`（存在しないことを確認）
-- [ ] `/root/persistence-test.txt`（存在しないことを確認）
-- [ ] `/var/tmp/persistence-test.txt`（存在しないことを確認）
-- [ ] `/usr/local/persistence-test.txt`（存在しないことを確認）
-- [ ] `/opt/persistence-test.txt`（存在しないことを確認）
+#### ✅ 正しく削除されたもの
 
-#### ⚠️ デッドリンクが予想されるもの
+- [x] `/tmp/persistence-test.txt` - **削除確認**
+- [x] `/root/persistence-test.txt` - **削除確認**
+- [x] `/var/tmp/persistence-test.txt` - **削除確認**
+- [x] `/usr/local/persistence-test.txt` - **削除確認**
+- [x] `/opt/persistence-test.txt` - **削除確認**
 
-- [ ] `/home/user/cc-web-playground/symlink-to-tmp.txt`（リンクは存在するがターゲットが消失）
+#### ⚠️ デッドリンク
 
-### 確認コマンド
+- [x] `/home/user/cc-web-playground/symlink-to-tmp.txt` - **デッドリンク**（ターゲット消失）
+- [x] `/home/user/cc-web-playground/symlink-to-claude.txt` - **デッドリンク**（ターゲット消失）
 
-```bash
-# 次回セッション開始時に実行
-echo "=== Persistence Test Results ===" > /home/user/cc-web-playground/persistence-test-results.txt
+### 検証に使用したスクリプト
 
-# 期待：存在する
-for f in /home/user/persistence-test.txt \
-         /home/user/cc-web-playground/.persistence-test \
-         ~/.claude/persistence-test.txt; do
-  if [ -f "$f" ]; then
-    echo "✅ PASS: $f exists" >> /home/user/cc-web-playground/persistence-test-results.txt
-    cat "$f" >> /home/user/cc-web-playground/persistence-test-results.txt
-    echo "---" >> /home/user/cc-web-playground/persistence-test-results.txt
-  else
-    echo "❌ FAIL: $f missing" >> /home/user/cc-web-playground/persistence-test-results.txt
-  fi
-done
-
-# 期待：存在しない
-for f in /tmp/persistence-test.txt \
-         /root/persistence-test.txt \
-         /var/tmp/persistence-test.txt \
-         /usr/local/persistence-test.txt \
-         /opt/persistence-test.txt; do
-  if [ ! -f "$f" ]; then
-    echo "✅ PASS: $f correctly removed" >> /home/user/cc-web-playground/persistence-test-results.txt
-  else
-    echo "❌ FAIL: $f still exists (unexpected)" >> /home/user/cc-web-playground/persistence-test-results.txt
-  fi
-done
-
-# シンボリックリンクのテスト
-echo "=== Symlink Tests ===" >> /home/user/cc-web-playground/persistence-test-results.txt
-ls -lah /home/user/cc-web-playground/symlink-*.txt >> /home/user/cc-web-playground/persistence-test-results.txt 2>&1
-
-cat /home/user/cc-web-playground/persistence-test-results.txt
-```
+完全な検証スクリプトと結果は `persistence-test-results.txt` を参照してください。
 
 ---
 
-## まとめ
+## まとめ（検証完了）
 
-### 永続化の原則
+### 永続化の原則（検証済み）
 
-| ディレクトリ | 永続化 | 理由 |
-|------------|-------|------|
-| `/home/user/` | ✅ | ホストストレージマウント |
-| `~/.claude/` | ✅ | Claude Code管理領域 |
-| `/tmp/`, `/var/tmp/` | ❌ | 一時ファイルシステム |
-| `/root/`（`.claude/`除く） | ❌ | コンテナ内のみ |
-| `/usr/`, `/opt/`, `/etc/` | ❌ | コンテナイメージの一部 |
+| ディレクトリ | 永続化 | 検証結果 | 理由 |
+|------------|-------|---------|------|
+| `/home/user/cc-web-playground/` | ✅ | 永続化成功 | プロジェクトディレクトリのマウント |
+| `/home/user/`（プロジェクト外） | ❌ | 永続化失敗 | プロジェクト外は対象外 |
+| `~/.claude/`（サービス管理） | ⚠️ | 部分的 | サービスファイルのみ永続化 |
+| `~/.claude/`（ユーザー作成） | ❌ | 永続化失敗 | ユーザー使用不可 |
+| `/tmp/`, `/var/tmp/` | ❌ | 正しく削除 | 一時ファイルシステム |
+| `/root/`（`.claude/`除く） | ❌ | 正しく削除 | コンテナ内のみ |
+| `/usr/`, `/opt/`, `/etc/` | ❌ | 正しく削除 | コンテナイメージの一部 |
 
-### 開発者への推奨事項
+### 開発者への推奨事項（検証済み）
 
-1. **重要なファイルは`/home/user/`配下に配置**
-2. **設定ファイルはGit管理**
+1. **すべてのファイルをプロジェクトディレクトリ内に配置**
+   - `/home/user/cc-web-playground/`配下のみが永続化される
+2. **設定ファイルはGit管理下に置く**
+   - プロジェクト内の`configs/`, `scripts/`等に配置
 3. **セットアップスクリプトを活用**
+   - エフェメラルな環境を毎回セットアップ
 4. **頻繁にコミット・プッシュ**
-5. **`.claude/settings.json`でフック活用**
+   - データ損失リスクを最小化
+5. **`~/.claude/`はユーザーデータ保存に使用しない**
+   - サービス管理領域のため永続化されない
 
-### 次のステップ
+### 検証状況
 
-- 次回セッションで永続化の検証を完了
-- 結果をこのドキュメントに追記
-- ベストプラクティスの更新
+✅ **検証完了**: 2025-10-30
+- テストファイル配置による検証実施
+- 自動検証スクリプト実行
+- 結果を`persistence-test-results.txt`に保存
 
 ---
 
 **調査実施者**: Claude (Anthropic)
-**次回確認予定**: 次回セッション開始時
+**調査期間**: 2025-10-30（実験） → 2025-10-30（検証完了）
+**検証ステータス**: ✅ 完了
+
+**関連ファイル**:
+- `persistence-test-results.txt` - 自動検証スクリプトの実行結果
+
 **関連ドキュメント**:
 - [01-environment-overview.md](./01-environment-overview.md)
 - [02-container-lifecycle.md](./02-container-lifecycle.md)

@@ -1,0 +1,20 @@
+=== Persistence Test Results ===
+❌ FAIL: /home/user/persistence-test.txt missing
+✅ PASS: /home/user/cc-web-playground/.persistence-test exists
+Persistence Test
+Created: 20251030-024524
+Session: container_011CUcWuDit7gV6dtHXW3LYv--fresh-half-spiffy-move
+Purpose: Verify data persistence across sessions
+---
+❌ FAIL: /root/.claude/persistence-test.txt missing
+✅ PASS: /tmp/persistence-test.txt correctly removed
+✅ PASS: /root/persistence-test.txt correctly removed
+✅ PASS: /var/tmp/persistence-test.txt correctly removed
+✅ PASS: /usr/local/persistence-test.txt correctly removed
+✅ PASS: /opt/persistence-test.txt correctly removed
+=== Symlink Tests ===
+lrwxrwxrwx 1 root root 47 Oct 30 05:57 /home/user/cc-web-playground/symlink-absolute.txt -> /home/user/cc-web-playground/symlink-target.txt
+lrwxrwxrwx 1 root root 18 Oct 30 05:57 /home/user/cc-web-playground/symlink-relative.txt -> symlink-target.txt
+-rw-r--r-- 1 root root 20 Oct 30 05:57 /home/user/cc-web-playground/symlink-target.txt
+lrwxrwxrwx 1 root root 34 Oct 30 05:57 /home/user/cc-web-playground/symlink-to-claude.txt -> /root/.claude/persistence-test.txt
+lrwxrwxrwx 1 root root 25 Oct 30 05:57 /home/user/cc-web-playground/symlink-to-tmp.txt -> /tmp/persistence-test.txt
