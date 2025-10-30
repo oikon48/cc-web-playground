@@ -25,5 +25,5 @@ fi
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# TEST: Exit with code 1 to see behavior
-exit 1
+# TEST: Exit with code 2 to see behavior
+exit 2
