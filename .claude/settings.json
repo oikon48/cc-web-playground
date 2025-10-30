@@ -4,5 +4,6 @@
     "allow": [
       "Bash(gh:*)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true
 }
