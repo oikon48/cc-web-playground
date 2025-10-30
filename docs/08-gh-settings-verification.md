@@ -23,11 +23,17 @@ This document records the verification results for `.claude/settings.json` auto-
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      "Bash(gh :*)"
+      "Bash(gh:*)"
     ]
   }
 }
 ```
+
+**⚠️ Important Syntax Note**: The pattern must be `"Bash(gh:*)"` **without a space before the colon**. The initial configuration had `"Bash(gh :*)"` which was incorrect syntax.
+
+**Correct Pattern Syntax**:
+- ✅ `"Bash(gh:*)"` - Correct (no space before colon)
+- ❌ `"Bash(gh :*)"` - Incorrect (space before colon)
 
 This configuration allows all `gh` commands to be executed via Bash without approval prompts.
 
@@ -164,12 +170,19 @@ The configuration successfully allows all `gh` commands to execute without appro
 1. **Installation Location Matters**:
    - System-wide installation (`/usr/local/bin`) still requires approval
    - Project directory installation (`/home/user/cc-web-playground/bin`) works seamlessly
+   - **Reason**: System `gh` command is blocked at system level regardless of `.claude/settings.json`
 
-2. **Settings Scope**:
-   - The `"Bash(gh :*)"` pattern covers all `gh` subcommands
+2. **Pattern Syntax is Critical**:
+   - ✅ `"Bash(gh:*)"` - Correct pattern (no space before colon)
+   - ❌ `"Bash(gh :*)"` - Incorrect pattern (space before colon)
+   - The pattern follows the format `<command>:*` for prefix matching
+
+3. **Settings Scope**:
+   - The `"Bash(gh:*)"` pattern covers all `gh` subcommands
    - Works regardless of additional flags or repository specifications
+   - Only applies to locally installed `gh` in project directory
 
-3. **Environment Integration**:
+4. **Environment Integration**:
    - GitHub token authentication via `GITHUB_TOKEN` environment variable
    - Local proxy for git operations (special containerized setup)
 
@@ -191,11 +204,37 @@ The configuration successfully allows all `gh` commands to execute without appro
    - `.claude/settings.json` as the proper solution
    - Mark bash script workarounds as legacy approach
 
+## Issues Discovered During Verification
+
+### Issue 1: Pattern Syntax Error
+
+**Problem**: Initial configuration used `"Bash(gh :*)"` with a space before the colon.
+
+**Impact**: While local `gh` commands worked when called with full path, the pattern syntax was technically incorrect.
+
+**Resolution**: Changed to `"Bash(gh:*)"` (no space before colon) to match correct pattern syntax.
+
+**Reference**: See `docs/06-tool-execution-policy.md` for pattern syntax examples.
+
+### Issue 2: Misunderstanding System vs Local Installation
+
+**Problem**: When `which gh` returned an error (actually an approval prompt), it was misinterpreted as "`gh` is not installed".
+
+**Impact**: Led to unnecessary download and local installation of `gh` CLI.
+
+**Actual Situation**:
+- System `gh` was already installed
+- System `gh` is blocked at system level regardless of settings
+- Local installation in project directory was the correct approach
+
+**Key Learning**: Approval prompts can appear as errors, making it difficult to distinguish between "not installed" and "needs approval".
+
 ## Next Steps
 
 1. ✅ Verification complete - settings work as expected
-2. 📝 Update legacy documentation (docs/03)
-3. 🎯 Ready to proceed with next priority validation task
+2. ✅ Pattern syntax corrected
+3. 📝 Update legacy documentation (docs/03)
+4. 🎯 Ready to proceed with next priority validation task
 
 ## Related Documentation
 
@@ -205,4 +244,4 @@ The configuration successfully allows all `gh` commands to execute without appro
 
 ---
 
-**Verification Status**: ✅ **COMPLETE AND SUCCESSFUL**
+**Verification Status**: ✅ **COMPLETE AND SUCCESSFUL** (with syntax correction applied)
