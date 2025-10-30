@@ -16,6 +16,7 @@ This repository contains comprehensive research on the Claude Code on the Web en
 - **[docs/03-gh-command-workaround.md](./docs/03-gh-command-workaround.md)** - GitHub CLI workaround
 - **[docs/04-future-investigation-plan.md](./docs/04-future-investigation-plan.md)** - Future investigation plan
 - **[docs/05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md)** - Data persistence investigation
+- **[docs/06-tool-execution-policy.md](./docs/06-tool-execution-policy.md)** - Tool execution policy and command capabilities
 
 ### Quick Links
 
@@ -25,6 +26,7 @@ This repository contains comprehensive research on the Claude Code on the Web en
 | System Architecture | [02-container-lifecycle.md](./docs/02-container-lifecycle.md) |
 | GitHub Integration | [03-gh-command-workaround.md](./docs/03-gh-command-workaround.md) |
 | Data Persistence | [05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md) |
+| Tool Execution Policy | [06-tool-execution-policy.md](./docs/06-tool-execution-policy.md) |
 | Future Research | [04-future-investigation-plan.md](./docs/04-future-investigation-plan.md) |
 
 ## 🎯 What's Inside
@@ -34,7 +36,8 @@ This repository contains comprehensive research on the Claude Code on the Web en
 - ✅ Network capabilities and proxy configuration
 - ✅ Git setup and authentication details
 - ✅ Command execution policies and workarounds
-- 📋 Future investigation roadmap (15 categories)
+- ✅ Tool execution policy and command capabilities (NEW)
+- 📋 Future investigation roadmap
 
 ## 🚀 Getting Started
 
