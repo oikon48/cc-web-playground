@@ -1,0 +1,64 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {}
+    },
+    "gitmcp-example": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://gitmcp.io/anthropics/anthropic-sdk-typescript"
+      ],
+      "env": {},
+      "_comment": "GitMCP: Free remote MCP server for GitHub repositories. No authentication required."
+    },
+    "gitmcp-dynamic": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://gitmcp.io/docs"
+      ],
+      "env": {},
+      "_comment": "GitMCP dynamic endpoint: Allows AI to access any GitHub repository on demand."
+    },
+    "atlassian-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.atlassian.com/v1/sse"
+      ],
+      "env": {},
+      "_comment": "Atlassian Remote MCP: Requires OAuth authentication and Atlassian Cloud account. Provides access to Jira, Confluence, and Compass."
+    }
+  },
+  "_readme": {
+    "description": "Test configuration for remote MCP servers",
+    "usage": "To test remote MCP servers, replace .mcp.json with this file",
+    "documentation": "See docs/remote-mcp-investigation.md for details",
+    "requirements": [
+      "Node.js 18 or higher",
+      "Internet connectivity (HTTPS)",
+      "For OAuth servers: Browser access for authentication"
+    ],
+    "tested_servers": {
+      "gitmcp": {
+        "status": "connectivity confirmed",
+        "authentication": "none required",
+        "cost": "free"
+      },
+      "atlassian": {
+        "status": "connectivity confirmed (401 with auth required)",
+        "authentication": "OAuth 2.1 required",
+        "cost": "requires Atlassian Cloud subscription"
+      }
+    }
+  }
+}

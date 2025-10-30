@@ -14,6 +14,3 @@ Thumbs.db
 .vscode/
 .idea/
 *.iml
-
-# MCP Server data
-.serena/
