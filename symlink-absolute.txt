@@ -1,0 +1,1 @@
+/home/user/cc-web-playground/symlink-target.txt

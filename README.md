@@ -15,6 +15,7 @@ This repository contains comprehensive research on the Claude Code on the Web en
 - **[docs/02-container-lifecycle.md](./docs/02-container-lifecycle.md)** - Container lifecycle details
 - **[docs/03-gh-command-workaround.md](./docs/03-gh-command-workaround.md)** - GitHub CLI workaround
 - **[docs/04-future-investigation-plan.md](./docs/04-future-investigation-plan.md)** - Future investigation plan
+- **[docs/05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md)** - Data persistence investigation
 
 ### Quick Links
 
@@ -23,6 +24,7 @@ This repository contains comprehensive research on the Claude Code on the Web en
 | Getting Started | [01-environment-overview.md](./docs/01-environment-overview.md) |
 | System Architecture | [02-container-lifecycle.md](./docs/02-container-lifecycle.md) |
 | GitHub Integration | [03-gh-command-workaround.md](./docs/03-gh-command-workaround.md) |
+| Data Persistence | [05-data-persistence-boundaries.md](./docs/05-data-persistence-boundaries.md) |
 | Future Research | [04-future-investigation-plan.md](./docs/04-future-investigation-plan.md) |
 
 ## 🎯 What's Inside
