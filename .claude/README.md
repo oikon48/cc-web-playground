@@ -5,7 +5,6 @@
 ## ファイル
 
 - **settings.json**: プロジェクト設定（permissions, hooks）
-- **stop-hook-git-check.sh**: Git変更チェック用Stop Hook
 - **stop-hook-ccusage.sh**: トークン使用量表示用Stop Hook
 
 ## 永続化
