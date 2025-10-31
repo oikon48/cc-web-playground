@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-claude-orange: #FF6B35;
+  --color-claude-orange-50: #FFE8E0;
+  --color-claude-orange-100: #FFD4C6;
+  --color-claude-orange-200: #FFAD92;
+  --color-claude-orange-300: #FF865E;
+  --color-claude-orange-400: #FF6B35;
+  --color-claude-orange-500: #F04D00;
+  --color-claude-orange-600: #BC3C00;
+  --color-claude-orange-700: #882B00;
+  --color-claude-orange-800: #541A00;
+  --color-claude-orange-900: #200900;
+
+  --color-claude-dark: #1A1A1A;
+  --color-claude-dark-50: #4A4A4A;
+  --color-claude-dark-100: #3A3A3A;
+  --color-claude-dark-200: #2A2A2A;
+  --color-claude-dark-300: #1A1A1A;
+  --color-claude-dark-400: #0A0A0A;
+}
+
+body {
+  background-color: var(--color-claude-dark);
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, var(--color-claude-orange-400), var(--color-claude-orange-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.glow-orange {
+  text-shadow: 0 0 20px rgba(255, 107, 53, 0.5);
+}
