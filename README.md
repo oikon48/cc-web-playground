@@ -6,6 +6,19 @@ This project is a playground and investigation workspace for **Claude Code on th
 
 <https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web>
 
+## 🎨 Documentation Website
+
+**📖 [Claude Code Sandbox ドキュメントサイト](./site/index.html)**
+
+調査結果をわかりやすく解説した静的ウェブサイトです。Claude Codeをリスペクトしたデザインで、インタラクティブなUIを提供します。
+
+**ローカルで表示:**
+```bash
+cd site
+python3 -m http.server 8000
+# http://localhost:8000 をブラウザで開く
+```
+
 ## 📚 Investigation Documentation
 
 This repository contains comprehensive research on the Claude Code on the Web environment:
@@ -38,6 +51,7 @@ This repository contains comprehensive research on the Claude Code on the Web en
 
 ## 🎯 What's Inside
 
+- ✅ **Interactive Documentation Website** - Claude Code inspired design (2025-10-31)
 - ✅ Comprehensive environment investigation
 - ✅ Container lifecycle and resource limits analysis
 - ✅ Network capabilities and proxy configuration
@@ -53,9 +67,10 @@ This repository contains comprehensive research on the Claude Code on the Web en
 
 ## 🚀 Getting Started
 
-1. Read [docs/01-environment-overview.md](./docs/01-environment-overview.md) for basic understanding
-2. Check [docs/README.md](./docs/README.md) for complete navigation
-3. Explore specific topics as needed
+1. **Browse the interactive website**: Open [site/index.html](./site/index.html) for an overview
+2. Read [docs/01-environment-overview.md](./docs/01-environment-overview.md) for basic understanding
+3. Check [docs/README.md](./docs/README.md) for complete navigation
+4. Explore specific topics as needed
 
 ## 🤝 Contributing
 

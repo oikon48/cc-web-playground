@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code on the Web - サンドボックス環境解説</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Claude Code Sandbox</span>
+            </div>
+            <nav class="nav">
+                <a href="#overview">概要</a>
+                <a href="#environment">環境</a>
+                <a href="#tools">ツール</a>
+                <a href="#docs">ドキュメント</a>
+                <a href="https://github.com" target="_blank" class="btn-secondary">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Claude Code on the Web</span>
+                    <br>サンドボックス環境 完全ガイド
+                </h1>
+                <p class="hero-description">
+                    このサイトでは、Claude Code on the Webのサンドボックス環境について、
+                    徹底的な調査結果をわかりやすく解説します。
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-value">11+</div>
+                        <div class="stat-label">調査ドキュメント</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">16</div>
+                        <div class="stat-label">CPUコア</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">8GB</div>
+                        <div class="stat-label">メモリ</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">9.8GB</div>
+                        <div class="stat-label">ディスク</div>
+                    </div>
+                </div>
+                <div class="hero-actions">
+                    <a href="#overview" class="btn-primary">調査結果を見る</a>
+                    <a href="https://docs.claude.com/en/docs/claude-code/claude-code-on-the-web" target="_blank" class="btn-secondary">公式ドキュメント</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="section">
+        <div class="container">
+            <h2 class="section-title">調査概要</h2>
+            <p class="section-description">
+                このプロジェクトでは、Claude Code on the Webのサンドボックス環境について、
+                システム構成、制限事項、ベストプラクティスを網羅的に調査しました。
+            </p>
+
+            <div class="cards">
+                <div class="card card-highlight">
+                    <div class="card-icon">🏗️</div>
+                    <h3>環境アーキテクチャ</h3>
+                    <p>gVisorベースのセキュアなコンテナ環境。Ubuntu 24.04 LTS、16コアCPU、8GBメモリで動作。</p>
+                    <a href="#environment" class="card-link">詳細を見る →</a>
+                </div>
+
+                <div class="card card-highlight">
+                    <div class="card-icon">🛠️</div>
+                    <h3>ツール実行ポリシー</h3>
+                    <p>ほぼすべてのインストール済みコマンドが実行可能。GitHub CLIも完全サポート。</p>
+                    <a href="#tools" class="card-link">詳細を見る →</a>
+                </div>
+
+                <div class="card card-highlight">
+                    <div class="card-icon">💾</div>
+                    <h3>データ永続化</h3>
+                    <p>/home/user/と~/.claude/は永続化。/tmpや/root/はセッション終了時に消去。</p>
+                    <a href="#persistence" class="card-link">詳細を見る →</a>
+                </div>
+
+                <div class="card card-highlight">
+                    <div class="card-icon">🔐</div>
+                    <h3>セキュリティ</h3>
+                    <p>完全なroot権限を持ちながら、gVisorによる安全な分離を実現。</p>
+                    <a href="#security" class="card-link">詳細を見る →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Findings Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">重要な発見</h2>
+
+            <div class="findings">
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-icon">✅</span>
+                        <h3>コマンド実行の自由度</h3>
+                    </div>
+                    <p>
+                        以前は「ghコマンドがブロックされている」と誤解されていましたが、
+                        実際にはインストールされていなかっただけでした。
+                        インストール後は完全に動作します。
+                    </p>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-icon">🔓</span>
+                        <h3>Permission Deniedの真相</h3>
+                    </div>
+                    <p>
+                        ブラウザUI（クライアント側）が特定のコマンドパターンを検出して承認を要求。
+                        .claude/settings.jsonで自動承認設定が可能です。
+                    </p>
+                    <div class="code-block">
+                        <pre><code>{
+  "permissions": {
+    "allow": ["Bash(gh :*)"]
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="finding">
+                    <div class="finding-header">
+                        <span class="finding-icon">🔄</span>
+                        <h3>データ永続化の境界線</h3>
+                    </div>
+                    <ul class="finding-list">
+                        <li><strong>永続化される：</strong> /home/user/, ~/.claude/</li>
+                        <li><strong>揮発性：</strong> /tmp/, /root/, /opt/, /var/tmp</li>
+                        <li><strong>推奨：</strong> 重要なデータは必ず/home/user/配下に保存</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Environment Details Section -->
+    <section id="environment" class="section">
+        <div class="container">
+            <h2 class="section-title">環境詳細</h2>
+
+            <div class="env-grid">
+                <div class="env-card">
+                    <h3>🖥️ システム</h3>
+                    <ul>
+                        <li><strong>OS:</strong> Ubuntu 24.04.3 LTS</li>
+                        <li><strong>カーネル:</strong> Linux 4.4.0</li>
+                        <li><strong>アーキテクチャ:</strong> x86_64</li>
+                        <li><strong>ランタイム:</strong> gVisor (runsc)</li>
+                    </ul>
+                </div>
+
+                <div class="env-card">
+                    <h3>⚡ リソース</h3>
+                    <ul>
+                        <li><strong>CPU:</strong> 16コア (GenuineIntel)</li>
+                        <li><strong>メモリ:</strong> 8GB RAM</li>
+                        <li><strong>ディスク:</strong> 9.8GB</li>
+                        <li><strong>ファイルシステム:</strong> 9pプロトコル</li>
+                    </ul>
+                </div>
+
+                <div class="env-card">
+                    <h3>🌐 ネットワーク</h3>
+                    <ul>
+                        <li><strong>プロキシ:</strong> http://proxy:8888</li>
+                        <li><strong>外部通信:</strong> プロキシ経由で可能</li>
+                        <li><strong>DNS:</strong> 設定済み</li>
+                        <li><strong>Git:</strong> HTTPS通信可能</li>
+                    </ul>
+                </div>
+
+                <div class="env-card">
+                    <h3>🔧 開発ツール</h3>
+                    <ul>
+                        <li><strong>言語:</strong> Python, Node.js, Ruby, Go</li>
+                        <li><strong>エディタ:</strong> vim, nano</li>
+                        <li><strong>デバッガ:</strong> gdb, lldb, strace</li>
+                        <li><strong>VCS:</strong> Git 2.48.1</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="tools" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">ツール・コマンド</h2>
+
+            <div class="tools-info">
+                <div class="info-box info-success">
+                    <h3>✅ 実行可能</h3>
+                    <p>以下のカテゴリのコマンドは制限なく実行可能です：</p>
+                    <div class="tag-list">
+                        <span class="tag">システムツール (ls, ps, top)</span>
+                        <span class="tag">開発言語 (python, node, ruby)</span>
+                        <span class="tag">エディタ (vim, nano)</span>
+                        <span class="tag">デバッガ (gdb, strace)</span>
+                        <span class="tag">パッケージ管理 (apt, pip, npm)</span>
+                        <span class="tag">Git (git, gh)</span>
+                        <span class="tag">ネットワーク (curl, wget)</span>
+                    </div>
+                </div>
+
+                <div class="info-box info-warning">
+                    <h3>⚠️ 承認が必要</h3>
+                    <p>以下のコマンドは初回実行時にブラウザUIで承認が必要です：</p>
+                    <div class="tag-list">
+                        <span class="tag">gh (GitHub CLI)</span>
+                        <span class="tag">docker (インストール後)</span>
+                    </div>
+                    <p class="info-note">
+                        💡 <strong>Tip:</strong> .claude/settings.jsonで自動承認設定が可能
+                    </p>
+                </div>
+
+                <div class="info-box info-info">
+                    <h3>ℹ️ インストールが必要</h3>
+                    <p>デフォルトではインストールされていないツール：</p>
+                    <div class="tag-list">
+                        <span class="tag">gh (GitHub CLI)</span>
+                        <span class="tag">docker</span>
+                        <span class="tag">kubectl</span>
+                        <span class="tag">terraform</span>
+                    </div>
+                    <div class="code-block">
+                        <pre><code># GitHub CLIのインストール例
+apt update && apt install -y gh</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Persistence Section -->
+    <section id="persistence" class="section">
+        <div class="container">
+            <h2 class="section-title">データ永続化</h2>
+
+            <div class="persistence-grid">
+                <div class="persistence-card persistent">
+                    <h3>💾 永続化される領域</h3>
+                    <p>セッション間で保持されるディレクトリ：</p>
+                    <ul>
+                        <li><code>/home/user/</code> - ユーザーのホームディレクトリ</li>
+                        <li><code>~/.claude/</code> - Claude Code設定</li>
+                        <li>上記配下のすべてのファイルとディレクトリ</li>
+                    </ul>
+                    <div class="tip">
+                        <strong>推奨：</strong> プロジェクトファイルは /home/user/ に配置
+                    </div>
+                </div>
+
+                <div class="persistence-card ephemeral">
+                    <h3>🗑️ 揮発性の領域</h3>
+                    <p>セッション終了時に消去されるディレクトリ：</p>
+                    <ul>
+                        <li><code>/tmp/</code> - 一時ファイル</li>
+                        <li><code>/root/</code> - rootのホーム（root権限だが揮発性）</li>
+                        <li><code>/opt/</code> - オプションパッケージ</li>
+                        <li><code>/var/tmp</code> - 変動する一時データ</li>
+                    </ul>
+                    <div class="warning">
+                        <strong>注意：</strong> 重要なデータは保存しないこと
+                    </div>
+                </div>
+            </div>
+
+            <div class="best-practices">
+                <h3>📋 ベストプラクティス</h3>
+                <div class="practice-list">
+                    <div class="practice">
+                        <span class="practice-icon">✅</span>
+                        <div>
+                            <strong>プロジェクトは /home/user/ に配置</strong>
+                            <p>Gitリポジトリや開発ファイルは必ず永続化される領域に</p>
+                        </div>
+                    </div>
+                    <div class="practice">
+                        <span class="practice-icon">✅</span>
+                        <div>
+                            <strong>設定ファイルは ~/.bashrc や ~/.claude/ に</strong>
+                            <p>環境変数やエイリアスは永続化される場所に記述</p>
+                        </div>
+                    </div>
+                    <div class="practice">
+                        <span class="practice-icon">✅</span>
+                        <div>
+                            <strong>一時ファイルのみ /tmp/ を使用</strong>
+                            <p>ビルド成果物やキャッシュなど、消えても良いファイル向け</p>
+                        </div>
+                    </div>
+                    <div class="practice">
+                        <span class="practice-icon">⚠️</span>
+                        <div>
+                            <strong>apt install したパッケージは揮発性</strong>
+                            <p>セッション再開時に再インストールが必要</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="docs" class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">調査ドキュメント</h2>
+            <p class="section-description">
+                詳細な調査結果は以下のドキュメントで公開しています。
+            </p>
+
+            <div class="doc-grid">
+                <a href="../docs/01-environment-overview.md" class="doc-card">
+                    <div class="doc-number">01</div>
+                    <h3>環境概要</h3>
+                    <p>Claude Code環境の基本情報を網羅的に調査</p>
+                    <span class="doc-meta">2025-10-29 調査</span>
+                </a>
+
+                <a href="../docs/02-container-lifecycle.md" class="doc-card">
+                    <div class="doc-number">02</div>
+                    <h3>コンテナライフサイクル</h3>
+                    <p>gVisorベースのコンテナ環境の能力と制限</p>
+                    <span class="doc-meta">2025-10-29 調査</span>
+                </a>
+
+                <a href="../docs/03-gh-command-workaround.md" class="doc-card">
+                    <div class="doc-number">03</div>
+                    <h3>GitHub CLI回避策</h3>
+                    <p>ghコマンド制限の原因調査と解決方法</p>
+                    <span class="doc-meta">2025-10-29 調査</span>
+                </a>
+
+                <a href="../docs/05-data-persistence-boundaries.md" class="doc-card">
+                    <div class="doc-number">05</div>
+                    <h3>データ永続化の境界線</h3>
+                    <p>セッション間で永続化されるデータの完全調査</p>
+                    <span class="doc-meta">2025-10-30 調査</span>
+                </a>
+
+                <a href="../docs/06-tool-execution-policy.md" class="doc-card">
+                    <div class="doc-number">06</div>
+                    <h3>ツール実行ポリシー</h3>
+                    <p>コマンド実行可能性とPermission Deniedの真相</p>
+                    <span class="doc-meta">2025-10-30 調査</span>
+                </a>
+
+                <a href="../docs/07-investigation-summary.md" class="doc-card">
+                    <div class="doc-number">07</div>
+                    <h3>調査サマリー</h3>
+                    <p>これまでの調査の総括と次のステップ</p>
+                    <span class="doc-meta">2025-10-30 更新</span>
+                </a>
+
+                <a href="../docs/claude-startup-options.md" class="doc-card">
+                    <div class="doc-number">📝</div>
+                    <h3>起動オプション詳細</h3>
+                    <p>Claude Codeの起動パラメータと環境変数</p>
+                    <span class="doc-meta">2025-10-30 調査</span>
+                </a>
+
+                <a href="../docs/11-startup-options-investigation-methodology.md" class="doc-card">
+                    <div class="doc-number">11</div>
+                    <h3>調査方法論</h3>
+                    <p>設定調査の具体的な方法とカスタマイズガイド</p>
+                    <span class="doc-meta">2025-10-30 調査</span>
+                </a>
+            </div>
+
+            <div class="doc-cta">
+                <h3>すべてのドキュメントを見る</h3>
+                <a href="../docs/README.md" class="btn-primary">ドキュメント一覧</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Claude Code Sandbox</h4>
+                    <p>Claude Code on the Webのサンドボックス環境を徹底調査</p>
+                </div>
+                <div class="footer-section">
+                    <h4>リンク</h4>
+                    <ul>
+                        <li><a href="https://docs.claude.com/en/docs/claude-code">Claude Code公式</a></li>
+                        <li><a href="https://github.com/anthropics/claude-code">GitHub</a></li>
+                        <li><a href="../docs/README.md">ドキュメント</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>調査プロジェクト</h4>
+                    <ul>
+                        <li><a href="../README.md">プロジェクトREADME</a></li>
+                        <li><a href="../docs/04-future-investigation-plan.md">今後の調査計画</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Claude Code Sandbox Investigation Project. Powered by Claude (Anthropic).</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
