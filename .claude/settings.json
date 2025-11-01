@@ -11,6 +11,10 @@
         "matcher": "",
         "hooks": [
           {
+            "type": "command",
+            "command": ".claude/hooks/stop-hook.sh"
+          },
+          {
             "type": "prompt",
             "prompt": "Return {\"continue\": false, \"stopReason\": \"🎃 Session ended by prompt hook!\"}"
           }
