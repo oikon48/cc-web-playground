@@ -11,8 +11,8 @@
         "matcher": "",
         "hooks": [
           {
-            "type": "command",
-            "command": ".claude/stop-hook-ccusage.sh"
+            "type": "prompt",
+            "prompt": "Return {\"continue\": false, \"stopReason\": \"🎃 Session ended by prompt hook!\"}"
           }
         ]
       }
