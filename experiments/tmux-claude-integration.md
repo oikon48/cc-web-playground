@@ -120,8 +120,81 @@ Test message from outside
 3. 別のアプローチとして、Claude Code APIやMCPサーバーの活用を検討
 4. コミュニティやGitHubのissueで同様の試みがないか調査
 
+## 追加実験: `-p`オプションのテスト
+
+### 実験2の目的
+`claude -p "prompt here"`を使用して、インタラクティブモードを回避し、直接プロンプトを送信する方法を検証。
+
+### 実施したテスト
+
+#### テスト1: tmux内で`-p`オプション使用
+```bash
+tmux send-keys -t claude_test2 'claude -p "echo hello world"' Enter
+```
+
+#### テスト2: tmux + worktree + `--dangerously-skip-permission` + `-p`
+```bash
+tmux send-keys -t claude_wt 'claude --dangerously-skip-permission -p "Create a file named test.txt with content: Hello from tmux"' Enter
+```
+
+#### テスト3: tmuxなしで直接実行
+```bash
+cd /tmp/claude-prompt-test && timeout 60 claude --dangerously-skip-permission -p "echo test123"
+```
+
+### 実験2の結果
+
+**すべてのテストで同様の結果:**
+- ✅ プロセスは起動（psで確認済み）
+- ✅ コマンドはtmuxペインに表示される
+- ✅ 一部のケースで`<system-reminder>`タグが出力に現れる（Claudeが処理を開始した証拠）
+- ❌ 最終的な応答や結果が得られない
+- ❌ 60秒以上待機しても出力なし
+- ❌ タスク実行の形跡なし（ファイル作成されず）
+
+### pipe-paneによるログ記録
+
+```bash
+tmux pipe-pane -t claude_wt -o "cat >> /tmp/claude_worktree_test.log"
+```
+
+**ログの内容:**
+```
+root@runsc:/tmp/claude-prompt-test# claude --dangerously-skip-permission -p "Create a file named test.txt with content: Hello from tmux"
+[?2004l
+```
+
+TTY制御シーケンス（`[?2004l`）は表示されるが、Claudeからの実際の出力は記録されない。
+
+### 追加の発見
+
+1. **複数のClaudeプロセスが同時実行中:**
+   - `claude` (元のメインプロセス)
+   - `claude -p "What is 2+2?"`
+   - `claude -p "echo hello world"`
+   - `claude --dangerously-skip-permission -p "Create a file..."`
+
+2. **プロセスの状態:**
+   - すべてのプロセスがSleeping状態（Sl）
+   - 正常終了せず、タイムアウトまで実行継続
+   - CPU使用率は低い（待機中）
+
+3. **`--help`も応答なし:**
+   - `claude --help`も同様に無応答
+   - これはClaude Code全体が対話型を前提としていることを示唆
+
+### 実験2の結論
+
+**`-p`オプションも実用的ではない**
+
+- `-p`オプションを使用しても、Claude Codeは応答を返さない
+- tmux内外、`--dangerously-skip-permission`の有無に関わらず同じ結果
+- `<system-reminder>`が出力されることから、Claudeは内部的に処理を開始しているが、最終的な出力がされない
+- Claude Codeは完全にインタラクティブなTTY環境を前提として設計されている可能性が高い
+
 ## 参考情報
 
-- Claude Code実行オプション: `--dangerously-skip-permission`
+- Claude Code実行オプション: `--dangerously-skip-permission`, `-p`
 - 使用したgit機能: `git worktree`
 - tmux機能: `send-keys`, `capture-pane`, `pipe-pane`
+- TTY制御シーケンス: `[?2004l` (bracketed paste mode)
